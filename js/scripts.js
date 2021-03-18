@@ -3,27 +3,38 @@ document.addEventListener("DOMContentLoaded", () => {
     var date = new Date();
     var month;
     var year;
-    //var day = date.getDate();
+    var day;
+    var minMonth;
+    var minYear;
+    var minDay;
     var dayOfMonth = [];
     var calendar = [];
     var minDate = [];
+    var minDateType = document.querySelector('#minDate_type').value;
+    var minDateNumber = document.querySelector('#minDate_number').value;
+    var minDateNum = 0;
 
-    minDate = setMinDate('days', 1078);
-    //daysLeftInYear();
+    minDateNum = parseInt(minDateNumber);
+
+    minDate = setMinDate(minDateType, minDateNum);
 
     if(minDate.length > 0) {
-        year = minDate[0];
-        month = minDate[1];
-        day = minDate[2];
+        minYear = minDate[0];
+        minMonth = minDate[1];
+        minDay = minDate[2];
+        year = minYear;
+        month = minMonth;
+        day = minDay;
     } else {
         month = date.getMonth();
         year = date.getFullYear();
         day = 0;
     }
 
-    calendar = createCalendar(year, month, day);
+    calendar = createCalendar(year, month, day, minDate);
 
     document.querySelector('#prev').addEventListener('click', () => {
+        day = 0;
 
         for (var i = 0; i < calendar.length; i++) {
             calendar[i].remove();
@@ -38,11 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
             month = month - 1;
         }
 
-        calendar = createCalendar(year, month);
+        calendar = createCalendar(year, month, day, minDate);
 
     });
 
     document.querySelector('#next').addEventListener('click', () => {
+        day = 0;
 
         for (var i = 0; i < calendar.length; i++) {
             calendar[i].remove();
@@ -57,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
             month = month + 1;
         }
 
-        calendar = createCalendar(year, month);
+        calendar = createCalendar(year, month, day, minDate);
 
     });
 
@@ -172,7 +184,7 @@ function findTheFirst(y, m) {
     return result;
 }
 
-function createCalendar(year, month, day = 0) {
+function createCalendar(year, month, day = 0, minDate = []) {
 
     var dayOfMonth = [];
     var days;
@@ -181,6 +193,19 @@ function createCalendar(year, month, day = 0) {
     var firstDay;
     var prevDaysFill;
     var dayStart = 1;
+    var minYear;
+    var minMonth;
+    var minDay;
+
+    if(minDate.length > 0) {
+        minYear = minDate[0];
+        minMonth = minDate[1];
+        minDay = minDate[2];
+    } else {
+        minYear = 0;
+        minMonth = 0;
+        minDay = 0;
+    }
 
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -215,12 +240,27 @@ function createCalendar(year, month, day = 0) {
 
     var d = 1;
 
-    if(day > 0) {
+    if(minDay > 0) {
         for (var k = firstDay; k < days + firstDay; k++) {
             dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
             dayOfMonth[k].innerHTML = dayStart;
-            if(dayStart < day) {
+            if(dayStart < minDay && monthVal == minMonth) {
                 dayOfMonth[k].disabled = true;
+            }
+            else if(monthVal > minMonth && year == minYear) {
+                dayOfMonth[k].disabled = false;
+            }
+            else if(year < minYear) {
+                dayOfMonth[k].disabled = true;
+            }
+            else if(year > minYear) {
+                dayOfMonth[k].disabled = false;
+            }
+            else if(monthVal < minMonth && (year == minYear || year < minYear)) {
+                dayOfMonth[k].disabled = true;
+            }
+            else {
+                dayOfMonth[k].disabled = false;
             }
             dayStart++;
             d++;
