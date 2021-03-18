@@ -1,79 +1,40 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     var date = new Date();
-    var month = date.getMonth();
-    //var month = 4;
-    var year = date.getFullYear();
-    var day = date.getUTCDate();
+    var month;
+    var year;
+    var day;
+    var minMonth;
+    var minYear;
+    var minDay;
     var dayOfMonth = [];
-    var calendar;
-    // var days;
-    // var lastMonth;
-    // var prevDays;
-    // var firstDay;
-    // var prevDaysFill;
-    // var dayStart = 1;
+    var calendar = [];
+    var minDate = [];
+    var minDateType = document.querySelector('#minDate_type').value;
+    var minDateNumber = document.querySelector('#minDate_number').value;
+    var minDateNum = 0;
 
-    // days = numberOfDays(month);
-    // monthVal = month;
-    // firstDay = findTheFirst(year, month);
-    // lastMonth = month - 1;
-    // prevDays = numberOfDays(lastMonth);
-    // prevDaysFill = prevDays - (firstDay - 1);
-    // prevDaysFill2 = prevDays - (firstDay - 1);
-    // totalDays = days + firstDay;
+    minDateNum = parseInt(minDateNumber);
 
+    minDate = setMinDate(minDateType, minDateNum);
 
+    if(minDate.length > 0) {
+        minYear = minDate[0];
+        minMonth = minDate[1];
+        minDay = minDate[2];
+        year = minYear;
+        month = minMonth;
+        day = minDay;
+    } else {
+        month = date.getMonth();
+        year = date.getFullYear();
+        day = 0;
+    }
 
-
-    // for (var i = 0; i < 42; i++) {
-    //     var btn = document.createElement("button");
-    //     btn.className = 'btn' + i;
-    //     dayOfMonth.push(btn);
-    // }
-
-    // for (var j = 0; j < firstDay; j++) {
-    //     dayOfMonth[j].value = prevDaysFill * -1;
-    //     dayOfMonth[j].disabled = true;
-    //     dayOfMonth[j].innerHTML = prevDaysFill;
-    //     prevDaysFill++;
-    // }
-
-    // var d = 1;
-
-    // for (var k = firstDay; k < days + firstDay; k++) {
-    //     dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
-    //     dayOfMonth[k].innerHTML = dayStart;
-    //     dayStart++;
-    //     d++;
-    // }
-    // console.log('Cougar ' + d);
-
-    // var fDays = 1;
-
-    // for (var h = days + firstDay; h < 42; h++) {
-    //     dayOfMonth[h].value = -1;
-    //     dayOfMonth[h].disabled = true;
-    //     dayOfMonth[h].innerHTML = fDays;
-    //     fDays++;
-    // }
-
-    //console.log('dayArray ' + dayOfMonth.length);
-
-    //console.log('day ' + day);
-
-    // createCalendar(month, year, totalDays, dayOfMonth);
-    calendar = createCalendarYeah(month, year)
+    calendar = createCalendar(year, month, day, minDate);
 
     document.querySelector('#prev').addEventListener('click', () => {
-    //     dayStart = 1;
-    //     prevDaysFill = 0;
-    //     totalDays = 0;
-    //     prevDays = 0;
-    //     days = 0;
-    //     firstDay = 0;
-    //     lastMonth = 0;
-    //     fDays = 1;
+        day = 0;
 
         for (var i = 0; i < calendar.length; i++) {
             calendar[i].remove();
@@ -81,73 +42,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         calendar = [];
 
-    //     dayOfMonth = [];
+        if (month == 0) {
+            month = 11;
+            year = year - 1;
+        } else {
+            month = month - 1;
+        }
 
-    //     if (month == 0) {
-    //         month = 11;
-    //         year = year - 1;
-    //     } else {
-    //         month = month - 1;
-    //     }
-
-    //     lastMonth = month - 1;
-
-    //     if (lastMonth == 0) {
-    //         lastMonth = 11;
-    //     } else {
-    //         lastMonth = lastMonth - 0;
-    //     }
-
-    //     days = numberOfDays(month);
-    //     firstDay = findTheFirst(year, month);
-    //     prevDays = numberOfDays(lastMonth);
-    //     prevDaysFill = prevDays - (firstDay - 1);
-    //     totalDays = days + firstDay;
-
-    //     for (var i = 0; i < 42; i++) {
-    //         var btn = document.createElement("button");
-    //         btn.className = 'btn' + i;
-    //         dayOfMonth.push(btn);
-    //     }
-    
-    //     for (var j = 0; j < firstDay; j++) {
-    //         dayOfMonth[j].value = prevDaysFill * -1;
-    //         dayOfMonth[j].disabled = true;
-    //         dayOfMonth[j].innerHTML = prevDaysFill;
-    //         prevDaysFill++;
-    //     }
-
-    //     d = 1;
-    
-    //     for (var k = firstDay; k < days + firstDay; k++) {
-    //         dayOfMonth[k].value = year + '-' + (month + 1) + '-' + d;
-    //         dayOfMonth[k].innerHTML = dayStart;
-    //         dayStart++;
-    //         d++;
-    //     }
-
-    //     for (var h = days + firstDay; h < 42; h++) {
-    //     dayOfMonth[h].value = -1;
-    //     dayOfMonth[h].disabled = true;
-    //     dayOfMonth[h].innerHTML = fDays;
-    //     fDays++;
-    // }
-
-        // createCalendar(month, year, totalDays, dayOfMonth);
-
-        changeMonth(month, year, 'back', calendar);
+        calendar = createCalendar(year, month, day, minDate);
 
     });
 
     document.querySelector('#next').addEventListener('click', () => {
-    //     dayStart = 1;
-    //     prevDaysFill = 0;
-    //     totalDays = 0;
-    //     prevDays = 0;
-    //     days = 0;
-    //     firstDay = 0;
-    //     lastMonth = 0;
-    //     fDays = 1;
+        day = 0;
 
         for (var i = 0; i < calendar.length; i++) {
             calendar[i].remove();
@@ -155,69 +62,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         calendar = [];
 
-    //     dayOfMonth = [];
+        if (month == 11) {
+            month = 0;
+            year = year + 1;
+        } else {
+            month = month + 1;
+        }
 
-    //     if (month == 11) {
-    //         month = 0;
-    //         year = year + 1;
-    //     } else {
-    //         month = month + 1;
-    //     }
-
-    //     lastMonth = month - 1;
-
-    //     if (lastMonth == 0) {
-    //         lastMonth = 11;
-    //     } else {
-    //         lastMonth = lastMonth - 0;
-    //     }
-    //     console.log('lastMonth ' + lastMonth);
-
-    //     days = numberOfDays(month);
-
-    //     firstDay = findTheFirst(year, month);
-    //     prevDays = numberOfDays(lastMonth);
-    //     prevDaysFill = prevDays - (firstDay - 1);
-    //     totalDays = days + firstDay;
-
-    //     for (var i = 0; i < 42; i++) {
-    //         var btn = document.createElement("button");
-    //         btn.className = 'btn' + i;
-    //         dayOfMonth.push(btn);
-    //     }
-    
-    //     for (var j = 0; j < firstDay; j++) {
-    //         dayOfMonth[j].value = prevDaysFill * -1;
-    //         dayOfMonth[j].disabled = true;
-    //         dayOfMonth[j].innerHTML = prevDaysFill;
-    //         prevDaysFill++;
-    //     }
-
-    //     d = 1;
-    
-    //     for (var k = firstDay; k < days + firstDay; k++) {
-    //         dayOfMonth[k].value = year + '-' + (month + 1) + '-' + d;
-    //         dayOfMonth[k].innerHTML = dayStart;
-    //         dayStart++;
-    //         d++;
-    //     }
-
-    //     for (var h = days + firstDay; h < 42; h++) {
-    //     dayOfMonth[h].value = -1;
-    //     dayOfMonth[h].disabled = true;
-    //     dayOfMonth[h].innerHTML = fDays;
-    //     fDays++;
-    // }
-
-    //     createCalendar(month, year, totalDays, dayOfMonth);
-
-    changeMonth(month, year, 'forward', calendar);
+        calendar = createCalendar(year, month, day, minDate);
 
     });
 
 
 
 });
+
+function isLeapYear(y) 
+{
+    var leapYear = 0;
+
+    if (y % 400 == 0) {
+        leapYear = 1;
+    }
+    else if (y % 100 == 0 && y % 4 == 0) {
+        leapYear = 0;
+    }
+    else if (y % 4 == 0 && y % 100 != 0) {
+        leapYear = 1;
+    }
+    else {
+        leapYear = 0;
+    }
+
+    return leapYear;
+}
 
 function findTheFirst(y, m) {
     var yc;
@@ -292,24 +170,11 @@ function findTheFirst(y, m) {
     }
     //console.log('cc ' + cc);
 
-    if (y % 100 == 0 && y % 4 == 0) {
-        lpc = 0;
-    }
-    else if (y % 4 == 0 && y % 100 != 0) {
-        if (m == 0 || m == 1) {
-            lpc = 1;
-        } else {
-            lpc = 0;
-        }
-    }
-    else if (y % 400 == 0) {
-        if (m == 0 || m == 1) {
-            lpc = 1;
-        } else {
-            lpc = 0;
-        }
-    }
-    else {
+    var leapYear = isLeapYear(y);
+
+    if (leapYear == 1 && m < 2) {
+        lpc = 1;
+    } else {
         lpc = 0;
     }
     //console.log('lpc ' + lpc);
@@ -319,61 +184,7 @@ function findTheFirst(y, m) {
     return result;
 }
 
-function createCalendar(month, year, days, dayOfMonth) {
-
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    var firstOfMonth = findTheFirst(year, month);
-
-    var cssGridProp = 'grid-area: 1/1/2/2;';
-
-    switch(firstOfMonth) {
-        case 0:
-            cssGridProp = 'grid-area: 1/1/2/2;';
-            break;
-        case 1:
-            cssGridProp = 'grid-area: 1/2/2/3;';
-            break;
-        case 2:
-            cssGridProp = 'grid-area: 1/3/2/4;';
-            break;
-        case 3:
-            cssGridProp = 'grid-area: 1/4/2/5;';
-            break;
-        case 4:
-            cssGridProp = 'grid-area: 1/5/2/6;';
-            break;
-        case 5:
-            cssGridProp = 'grid-area: 1/6/2/7;';
-            break;
-        case 6:
-            cssGridProp = 'grid-area: 1/7/2/8;';
-            break;
-    }
-
-    dayOfMonth[firstOfMonth].style.cssText = cssGridProp;
-
-
-    for (var i = 0; i < dayOfMonth.length; i++) {
-        document.querySelector('.date').appendChild(dayOfMonth[i]);
-    }
-
-    var buttons = document.querySelectorAll('button');
-
-    buttons.forEach(i => {
-        i.addEventListener('click', () => {
-            console.log('panther ' + i.value);
-            document.querySelector('.show_date').value = i.value;
-        });
-    })
-
-    console.log('month ' + month);
-
-    document.querySelector('.current').innerHTML = months[month] + ' ' + year;
-
-}
-
-function createCalendarYeah(month, year) {
+function createCalendar(year, month, day = 0, minDate = []) {
 
     var dayOfMonth = [];
     var days;
@@ -382,6 +193,19 @@ function createCalendarYeah(month, year) {
     var firstDay;
     var prevDaysFill;
     var dayStart = 1;
+    var minYear;
+    var minMonth;
+    var minDay;
+
+    if(minDate.length > 0) {
+        minYear = minDate[0];
+        minMonth = minDate[1];
+        minDay = minDate[2];
+    } else {
+        minYear = 0;
+        minMonth = 0;
+        minDay = 0;
+    }
 
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -389,11 +213,11 @@ function createCalendarYeah(month, year) {
 
     var cssGridProp = 'grid-area: 1/1/2/2;';
 
-    days = numberOfDays(month);
+    days = numberOfDays(month, year);
     monthVal = month;
     firstDay = findTheFirst(year, month);
     lastMonth = month - 1;
-    prevDays = numberOfDays(lastMonth);
+    prevDays = numberOfDays(lastMonth, year);
     prevDaysFill = prevDays - (firstDay - 1);
     prevDaysFill2 = prevDays - (firstDay - 1);
     totalDays = days + firstDay;
@@ -416,13 +240,47 @@ function createCalendarYeah(month, year) {
 
     var d = 1;
 
-    for (var k = firstDay; k < days + firstDay; k++) {
-        dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
-        dayOfMonth[k].innerHTML = dayStart;
-        dayStart++;
-        d++;
+    if(minDay > 0) {
+        for (var k = firstDay; k < days + firstDay; k++) {
+            dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
+            dayOfMonth[k].innerHTML = dayStart;
+            if(dayStart < minDay && monthVal == minMonth) {
+                dayOfMonth[k].disabled = true;
+            }
+            else if(monthVal > minMonth && year == minYear) {
+                dayOfMonth[k].disabled = false;
+            }
+            else if(year < minYear) {
+                dayOfMonth[k].disabled = true;
+            }
+            else if(year > minYear) {
+                dayOfMonth[k].disabled = false;
+            }
+            else if(monthVal < minMonth && (year == minYear || year < minYear)) {
+                dayOfMonth[k].disabled = true;
+            }
+            else {
+                dayOfMonth[k].disabled = false;
+            }
+            dayStart++;
+            d++;
+        }
+    } else {
+        for (var k = firstDay; k < days + firstDay; k++) {
+            dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
+            dayOfMonth[k].innerHTML = dayStart;
+            dayStart++;
+            d++;
+        }
     }
-    console.log('Cougar ' + d);
+
+    // for (var k = firstDay; k < days + firstDay; k++) {
+    //     dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
+    //     dayOfMonth[k].innerHTML = dayStart;
+    //     dayStart++;
+    //     d++;
+    // }
+    // console.log('Cougar ' + d);
 
     var fDays = 1;
 
@@ -468,12 +326,9 @@ function createCalendarYeah(month, year) {
 
     buttons.forEach(i => {
         i.addEventListener('click', () => {
-            console.log('panther ' + i.value);
             document.querySelector('.show_date').value = i.value;
         });
     })
-
-    console.log('month ' + month);
 
     document.querySelector('.current').innerHTML = months[month] + ' ' + year;
 
@@ -481,14 +336,29 @@ function createCalendarYeah(month, year) {
 
 }
 
-function numberOfDays(month) {
+function numberOfDays(month, year = 0) {
     var days; 
+    var date = new Date();
+    var year;
+    var y;
+    var leapYear = 0;
+
+    if(year == 0) {
+        y = date.getFullYear();
+    } else {
+        y = year;
+    }
+
+    leapYear = isLeapYear(y);
 
     if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
         days = 31;
     }
-    else if (month == 1) {
+    else if (month == 1 && leapYear == 0) {
         days = 28;
+    }
+    else if (month == 1 && leapYear == 1) {
+        days = 29;
     }
     else {
         days = 30;
@@ -497,32 +367,169 @@ function numberOfDays(month) {
     return days;
 }
 
-function changeMonth(month, year, direction, calendar) {
+function setMinDate(type, when) {
+    var date = new Date();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var day = date.getDate();
+    var nextMonth;
+    var nextYear = year + 1;
+    var currentNumDays = numberOfDays(month);
+    var nextNumDays;
+    var daysLeft = currentNumDays - day;
+    var restOfYear = daysLeftInYear();
+    var yearCounter = 0;
+    var minYear = 0;
+    var minMonth = 0;
+    var minDay = 0;
+    var allYear = 365;
+    var allNextYear = 365;
+    var minDate = [];
 
-    for (var i = 0; i < calendar.length; i++) {
-        calendar[i].remove();
-    }
-
-    if(direction == 'back') {
-
-        if (month == 0) {
-            month = 11;
-            year = year - 1;
-        } else {
-            month = month - 1;
-        }
+    if(month + 1 < 12) {
+        nextMonth = month + 1;
     } else {
-        if (month == 11) {
-            month = 0;
-            year = year + 1;
-        } else {
-            month = month + 1;
-        }
+        nextMonth = 1;
+        year + 1;
     }
 
-    createCalendarYeah(month, year);
+    nextNumDays = numberOfDays(nextMonth);
+
+    if(type == 'weeks') {
+        when = when * 7;
+    }
+
+    if(isLeapYear(nextYear) == 1) {
+        allNextYear = 366;
+    } else {
+        allNextYear = 365;
+    }
+
+    console.log('zero_when ' + when);
+   
+    if(when > restOfYear && when < (restOfYear + allNextYear)) {
+        console.log('komodo dragon');
+        when -= restOfYear;
+        yearCounter++;
+        month = 0;
+        days = numberOfDays(month);
+
+        while(when > days) {
+            if(month == 12) {
+                month = 0;
+            }
+
+            when -= days;
+            month++;
+            days = numberOfDays(month);
+        }
+
+        minYear = year + yearCounter;
+        minMonth = month;
+        minDay = when;
+
+    }
+    else if(when > restOfYear && when > (restOfYear + allNextYear)) {
+        console.log('wolf');
+        when -= restOfYear;
+        yearCounter++;
+
+        if(isLeapYear(year + yearCounter)) {
+            allYear = 366
+        } else {
+            allYear = 365;
+        }
+
+        while(when > allYear) {
+        
+            if(isLeapYear(year + yearCounter)) {
+                allYear = 366
+            } else {
+                allYear = 365;
+            }
+
+            when -= allYear;
+            yearCounter++;
+        }
+
+        month = 0;
+        days = numberOfDays(month, (year + yearCounter));
+
+        if(when > days) {
+            while(when > days) {
+                if(month == 11) {
+                    month = 0;
+                }
+
+                when -= days;
+                month++;
+                days = numberOfDays(month, year + yearCounter);
+            }
+
+        } else {
+            when -= days;
+        }
+        minYear = year + yearCounter;
+        minMonth = month;
+        minDay = when;
+
+    }
+    else if(when > daysLeft && when < (daysLeft + nextNumDays)) {
+        console.log('raven');
+        when -= daysLeft;
+        month++;
+
+        minYear = year;
+        minMonth = month;
+        minDay = when;
+    }
+    else {
+        console.log('tiger');
+        when += day;
+
+        minYear = year;
+        minMonth = month;
+        minDay = when;
+    }
+
+    console.log('month: ' + minMonth);
+    console.log('day: ' + minDay);
+    console.log('year ' + minYear);
+
+    minDate.push(minYear);
+    minDate.push(minMonth);
+    minDate.push(minDay);
+
+    return minDate;
+
+    
 }
 
-function setMinDate() {
+function daysLeftInYear() {
+    var date = new Date();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var day = date.getDate();
+    var leapYear = isLeapYear(year);
+    var days = 0;
+
+    if(leapYear == 1) {
+        allDays = 366;
+    } else {
+        allDays = 365;
+    }
+
+    for(i = 0; i < month; i++) {
+        days += numberOfDays(i);
+    }
+
+    days += day;
+
+    days = allDays - days;
+
+    return days;
+}
+
+function getMinDateWYear() {
 
 }
