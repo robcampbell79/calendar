@@ -1,16 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     var date = new Date();
-    var month = date.getMonth();
-    var year = date.getFullYear();
-    var day = date.getUTCDate();
+    var month;
+    var year;
+    //var day = date.getDate();
     var dayOfMonth = [];
     var calendar = [];
+    var minDate = [];
 
-    setMinDate('days', 1079);
-    daysLeftInYear();
-    
-    calendar = createCalendar(month, year);
+    minDate = setMinDate('days', 1078);
+    //daysLeftInYear();
+
+    if(minDate.length > 0) {
+        year = minDate[0];
+        month = minDate[1];
+        day = minDate[2];
+    } else {
+        month = date.getMonth();
+        year = date.getFullYear();
+        day = 0;
+    }
+
+    calendar = createCalendar(year, month, day);
 
     document.querySelector('#prev').addEventListener('click', () => {
 
@@ -27,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             month = month - 1;
         }
 
-        calendar = createCalendar(month, year);
+        calendar = createCalendar(year, month);
 
     });
 
@@ -46,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
             month = month + 1;
         }
 
-        calendar = createCalendar(month, year);
+        calendar = createCalendar(year, month);
 
     });
 
@@ -161,7 +172,7 @@ function findTheFirst(y, m) {
     return result;
 }
 
-function createCalendar(month, year, minDate = 0) {
+function createCalendar(year, month, day = 0) {
 
     var dayOfMonth = [];
     var days;
@@ -181,7 +192,7 @@ function createCalendar(month, year, minDate = 0) {
     monthVal = month;
     firstDay = findTheFirst(year, month);
     lastMonth = month - 1;
-    prevDays = numberOfDays(lastMonth);
+    prevDays = numberOfDays(lastMonth, year);
     prevDaysFill = prevDays - (firstDay - 1);
     prevDaysFill2 = prevDays - (firstDay - 1);
     totalDays = days + firstDay;
@@ -204,10 +215,13 @@ function createCalendar(month, year, minDate = 0) {
 
     var d = 1;
 
-    if(minDate > 0) {
+    if(day > 0) {
         for (var k = firstDay; k < days + firstDay; k++) {
             dayOfMonth[k].value = year + '-' + (monthVal + 1) + '-' + d;
             dayOfMonth[k].innerHTML = dayStart;
+            if(dayStart < day) {
+                dayOfMonth[k].disabled = true;
+            }
             dayStart++;
             d++;
         }
@@ -330,6 +344,7 @@ function setMinDate(type, when) {
     var minDay = 0;
     var allYear = 365;
     var allNextYear = 365;
+    var minDate = [];
 
     if(month + 1 < 12) {
         nextMonth = month + 1;
@@ -386,14 +401,15 @@ function setMinDate(type, when) {
         }
 
         while(when > allYear) {
-            when -= allYear;
-            yearCounter++;
-
+        
             if(isLeapYear(year + yearCounter)) {
                 allYear = 366
             } else {
                 allYear = 365;
             }
+
+            when -= allYear;
+            yearCounter++;
         }
 
         month = 0;
@@ -439,6 +455,13 @@ function setMinDate(type, when) {
     console.log('month: ' + minMonth);
     console.log('day: ' + minDay);
     console.log('year ' + minYear);
+
+    minDate.push(minYear);
+    minDate.push(minMonth);
+    minDate.push(minDay);
+
+    return minDate;
+
     
 }
 
